@@ -37,9 +37,12 @@ function islandora_oai_install() {
  * Updates the database to add ETD-MS output capability.
  */
 function islandora_oai_update_6100() {
+  
+  $ret = array();
+  
   $result = db_result(db_query("SELECT * FROM {oai2_metadata_formats} WHERE name = '%s';", 'oai_dc'));
   if (!$result) {
-    db_query("INSERT INTO {oai2_metadata_formats}
+    $ret[] = db_query("INSERT INTO {oai2_metadata_formats}
               (`name`,`metadata_prefix`,`schema`,`metadata_namespace`,`record_prefix`,`record_namespace`)
             VALUES 
               ('%s','%s','%s','%s','%s','%s');", 'oai_dc', 'oai_dc', 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd', 'http://www.openarchives.org/OAI/2.0/oai_dc/', 'dc', 'http://purl.org/dc/elements/1.1/'
@@ -48,12 +51,14 @@ function islandora_oai_update_6100() {
 
   $result = db_result(db_query("SELECT * FROM {oai2_metadata_formats} WHERE name = '%s';", 'oai_etdms'));
   if (!$result) {
-    db_query("INSERT INTO {oai2_metadata_formats}
+    $ret[] = db_query("INSERT INTO {oai2_metadata_formats}
               (`name`,`metadata_prefix`,`schema`,`metadata_namespace`,`record_prefix`,`record_namespace`)
             VALUES 
               ('%s','%s','%s','%s','%s','%s');", 'oai_etdms', 'oai_etdms', 'http://www.ndltd.org/standards/metadata/etdms/1.0/etdms.xsd', 'http://www.ndltd.org/standards/metadata/etdms/1.0/', 'thesis', 'http://www.ndltd.org/standards/metadata/etdms/1.0/'
     );
   }
+  
+  return $ret;
 }
 
 /**
